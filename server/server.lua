@@ -1,4 +1,5 @@
 local allworkbench = {}
+local VorpInv = exports.vorp_inventory:vorp_inventoryApi()
 
 
 jo.callback.register('murphy_craft:GiveItem', function(source,item,amount, meta)
@@ -13,35 +14,110 @@ jo.callback.register('murphy_craft:RemoveItem', function(source,item,amount, met
 	return result
 end)
 
+RegisterServerEvent("murphy_craft:TryCraft")
+AddEventHandler("murphy_craft:TryCraft", function(settings, recipeIndex, amount)
+    local _src = source
+    local recipe = settings.recipe[recipeIndex]
+    local canCraft = true
+
+    for _, req in pairs(recipe.need) do
+        local itemName, itemCount = req[1], req[2] * amount
+        local playerCount = GetItemAmount(_src, itemName)
+        if playerCount < itemCount then
+            canCraft = false
+            break
+        end
+    end
+
+    if canCraft then
+        TriggerClientEvent("murphy_craft:PlayCraftAnim", _src, settings.anim[1], settings.anim[2], recipe.worktime, settings, recipeIndex, amount)
+    else
+		TriggerClientEvent("murphy_craft:Notify", _src, "Not enough materials!", "cross", "COLOR_RED", 5000)
+    end
+end)
+
+RegisterServerEvent("murphy_craft:FinishCraft")
+AddEventHandler("murphy_craft:FinishCraft", function(settings, recipeIndex, amount)
+    local _src = source
+    print("[murphy_craft] FinishCraft triggered for player:", _src)
+
+    if not settings or not settings.recipe or not settings.recipe[recipeIndex] then
+        print("[murphy_craft] ERROR: Invalid settings or recipe index")
+        return
+    end
+
+    local recipe = settings.recipe[recipeIndex]
+    local missingItems = {}
+
+    -- Validate inventory
+    for _, req in pairs(recipe.need) do
+        local itemName = req[1]
+        local itemCount = req[2] * amount
+        local playerCount = GetItemAmount(_src, itemName)
+
+        print(string.format("[murphy_craft] Checking item: %s (player has: %d / needs: %d)", itemName, playerCount, itemCount))
+
+        if playerCount < itemCount then
+            table.insert(missingItems, string.format("%sx %s", itemCount, itemName))
+        end
+    end
+
+    -- Notify and stop if items missing
+    if #missingItems > 0 then
+        local msg = "Missing: " .. table.concat(missingItems, ", ")
+        print("[murphy_craft] Not enough items. Sending notification:", msg)
+        TriggerClientEvent("murphy_craft:Notify", _src, msg, "cross", "COLOR_RED", 5000)
+        return
+    end
+
+    -- Remove materials
+    for _, req in pairs(recipe.need) do
+        RemoveItem(_src, req[1], req[2] * amount)
+    end
+
+    -- Give reward and notify
+    for _, reward in pairs(recipe.craft) do
+        GiveItem(_src, reward[1], reward[2] * amount)
+        local craftedMsg = string.format("Crafted Successfully!", reward[2] * amount, reward[1])
+        print("[murphy_craft] Crafted item:", craftedMsg)
+        TriggerClientEvent("murphy_craft:Notify", _src, craftedMsg, "tick", "COLOR_WHITE", 5000)
+    end
+end)
+
 
 RegisterServerEvent("murphy_craft:CraftCheckQuantity", function(data, tag)
     local _source = source
-	local ItemAmount = {}
-	local cancraft = true
-	local loweramount = 0
-	for k, v in pairs (data.need) do
-		if cancraft == true then
-			if GetItemAmount(_source, v[1]) < 1 then
-				cancraft = false
-			else
-				amnt = GetItemAmount(_source, v[1]) / v[2]
-				table.insert(ItemAmount, amnt)
-			end
-		end
-	end
-	if cancraft == true then
-		loweramount = ItemAmount[1]
-		for index , quantity in pairs(ItemAmount) do
-			if quantity < loweramount then
-				loweramount = quantity
-			end
-		end
-		TriggerClientEvent("murphy_craft:CraftGetQuantity", _source, math.floor(loweramount), tag)
-	else
-		TriggerClientEvent("murphy_craft:CraftGetQuantity", _source, 0, tag)
-	end
+    local ItemAmount = {}
+    local canCraft = true
+    local lowerAmount = 0
 
+    for _, itemData in pairs(data.need) do
+        local itemName = itemData[1]
+        local requiredAmount = itemData[2]
+
+        local count = VorpInv.getItemCount(_source, itemName)
+
+        if count < requiredAmount then
+            canCraft = false
+            break
+        else
+            table.insert(ItemAmount, count / requiredAmount)
+        end
+    end
+
+    if canCraft then
+        lowerAmount = ItemAmount[1]
+        for _, quantity in pairs(ItemAmount) do
+            if quantity < lowerAmount then
+                lowerAmount = quantity
+            end
+        end
+        TriggerClientEvent("murphy_craft:CraftGetQuantity", _source, math.floor(lowerAmount), tag)
+    else
+        TriggerClientEvent("murphy_craft:CraftGetQuantity", _source, 0, tag)
+    end
 end)
+
 
 RegisterServerEvent("murphy_craft:CheckRefinedQuantity", function(item, multiply, sliderindex,  id, recipe)
 	local workbenchid = id.."_"..recipe

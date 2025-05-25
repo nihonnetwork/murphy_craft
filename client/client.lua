@@ -81,6 +81,11 @@ RegisterNetEvent("murphy_craft:OpenCraftingMenu", function (type, identification
 end)
 
 RegisterNetEvent("murphy_craft:CraftGetQuantity", function (amount, tag)
+    if not CurrentCraftingMenu or not CurrentCraftingMenu.items or not CurrentCraftingMenu.items[tag] then
+        print("[murphy_craft] ERROR: CurrentCraftingMenu or item tag not initialized properly.")
+        return
+    end
+
     if amount > 0 then 
         local values = {}
         for value = 1, amount do
@@ -88,15 +93,14 @@ RegisterNetEvent("murphy_craft:CraftGetQuantity", function (amount, tag)
         end
         CurrentCraftingMenu.items[tag].sliders[1].values = values
         CurrentCraftingMenu.items[tag].sliders[1].current = 1
-        CurrentCraftingMenu:refresh()
-
     else
         CurrentCraftingMenu.items[tag].sliders[1].values = {{label = 0}}
         CurrentCraftingMenu.items[tag].sliders[1].current = 1
-        CurrentCraftingMenu:refresh()
     end
 
+    CurrentCraftingMenu:refresh()
 end)
+
 
 RegisterNetEvent("murphy_craft:RefineGetQuantity", function (amount, tag)
     if amount > 0 then 
@@ -175,6 +179,19 @@ Citizen.CreateThread(function ()
     end
 end)
 
+RegisterNetEvent("murphy_craft:Notify")
+AddEventHandler("murphy_craft:Notify", function(text, icon, color, duration)
+    print("[murphy_craft] Received notification:", text, icon, color)
+    exports.murphy_notify:ShowAdvancedRightNotification(
+        tostring(text),
+        "menu_textures",
+        tostring(icon or "tick"),
+        tostring(color or "COLOR_WHITE"),
+        tonumber(duration or 5000)
+    )
+end)
+
+
 
 function playAnim(dict,name, time)
     RequestAnimDict(dict)
@@ -186,36 +203,44 @@ end
 
 function AddCraftingMenu(settings, craftingmenu)
     local menu = craftingmenu
-    for index, recipe in pairs(settings.recipe) do
+    for index, recipe in ipairs(settings.recipe) do
+        local tag = index -- make sure we use this consistently
         local elements = {
             title = recipe.label,
             description = recipe.description,
-            data = {tag = index},
+            data = {tag = tag},
             sliders = {
                 { type = "switch", current = 1, values = {{label = 0}} }
             },
             onActive = function(currentData)
                 CurrentCraftingMenu = menu
-                TriggerServerEvent("murphy_craft:CraftCheckQuantity", recipe, index)
-            end,
+                TriggerServerEvent("murphy_craft:CraftCheckQuantity", recipe, tag)
+            end,            
             onClick = function(currentData)
-                if not isCrafting then               
+                if not isCrafting then
                     jo.menu.show(false, false)
                     CurrentCraftingMenu = nil
                     CurrentIdentification = nil
                     CurrentType = nil
                     SelectedAmount = 0
-                    TriggerEvent("murphy_craft:StartCraft", settings, currentData.item.sliders[index].current, index)
+
+                    local sliderIndex = currentData.item.data.tag
+                    local amount = currentData.item.sliders[1].current
+
+                    TriggerServerEvent("murphy_craft:TryCraft", settings, index, amount)
                 else
                     isCrafting = false
                 end
             end,
         }
+
         if settings.icon then
             elements["icon"] = settings.icon
         end
+
         menu:addItem(elements)
     end
+
     menu:send()
 end
 local candisplay = false 
@@ -255,6 +280,29 @@ RegisterNetEvent("murphy_craft:GetRefineData", function (data)
     fuelcount = data.fuelcount
     candisplay = true 
 end)
+
+RegisterNetEvent("murphy_craft:PlayCraftAnim")
+AddEventHandler("murphy_craft:PlayCraftAnim", function(dict, name, duration, settings, recipeIndex, amount)
+    isCrafting = true
+    isInteracting = true
+
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        Wait(0)
+    end
+
+    TaskPlayAnim(PlayerPedId(), dict, name, 1.0, 1.0, duration * 1000, 1, 0, true, 0, false, 0, false)
+    Wait(duration * 1000)
+    ClearPedTasks(PlayerPedId())
+
+    isCrafting = false
+    isInteracting = false
+    
+    TriggerServerEvent("murphy_craft:FinishCraft", settings, recipeIndex, amount)
+end)
+
+
+
 
 function AddRefineSubMenu(recipe, menu, recindex)
     local RecipeIndex = recindex

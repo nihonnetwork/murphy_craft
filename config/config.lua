@@ -9,4 +9,4 @@ Config = {}
 -- redemrp2022
 -- rsg-core
 -- vorp
-Config.framework= "REDEMRP2k23"
+Config.framework= "vorp"
