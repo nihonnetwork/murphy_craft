@@ -1,29 +1,34 @@
-fx_version "adamant"
-games {"rdr3"}
+fx_version 'cerulean'
+game 'rdr3'
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
 
-shared_scripts {
-    '@jo_libs/init.lua'
-  }
+description 'Murphy Craft - Sistema de Crafting com Interface de Livro'
+version '0.1.0'
+author 'Murphy Development'
 
-jo_libs {
-    'menu',
-  }
-  
-ui_page "nui://jo_libs/nui/menu/index.html"
+shared_scripts {
+    'receipes.lua'
+}
 
 client_scripts {
-    'config/*.lua',
-    'config/workbench/*.lua',
-    'client/*.lua',
+    'client/*.lua'
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'config/*.lua',
-    'config/workbench/*.lua',
-	'server/adapters/*.lua',
-    'server/*.lua',
+    'server/sv_database.lua',
+    'server/sv_recipe_adapter.lua',
+    'server/sv_recipes.lua',
+    'server/*.lua'
+}
+
+ui_page 'nui/book/index.html'
+
+files {
+    'nui/book/index.html',
+    'nui/book/css/*.css',
+    'nui/book/js/*.js',
+    'nui/book/assets/**/*'
 }
 
 escrow_ignore {

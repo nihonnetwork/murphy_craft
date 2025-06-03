@@ -1,0 +1,621 @@
+/* Estilos gerais */
+.categories-container {
+    padding: 20px;
+}
+
+.category-section {
+    margin-bottom: 30px;
+}
+
+.category-section h2 {
+    font-family: 'Playfair Display', serif;
+    color: #2c1810;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.category-section p {
+    color: #5a4a42;
+    margin-bottom: 20px;
+}
+
+/* Grid de receitas */
+.recipes-grid, .refine-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Cards */
+.recipe-card, .refine-card {
+    background: #f9f3e6;
+    border: 1px solid #d4c5b9;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.recipe-card:hover, .refine-card:hover {
+    transform: translateY(-2px);
+}
+
+.recipe-header, .refine-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.recipe-header h3, .refine-header h3 {
+    font-family: 'Playfair Display', serif;
+    color: #2c1810;
+    margin: 0;
+    flex: 1;
+}
+
+.recipe-header img, .refine-header img {
+    width: 32px;
+    height: 32px;
+    margin-left: 10px;
+}
+
+.recipe-description, .refine-description {
+    color: #5a4a42;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* Lista de materiais */
+.recipe-materials {
+    margin-bottom: 15px;
+}
+
+.material-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #e8e0d5;
+}
+
+/* Controles */
+.recipe-controls, .refine-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-selector input[type="range"] {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    background: #d4c5b9;
+    border-radius: 3px;
+    outline: none;
+}
+
+.quantity-selector input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #8b5e3c;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.quantity-selector input[type="range"]::-webkit-slider-thumb:hover {
+    background: #6d4b2f;
+}
+
+.quantity-display {
+    min-width: 30px;
+    text-align: center;
+    color: #2c1810;
+    font-weight: bold;
+}
+
+/* Botões */
+.craft-btn, .refine-btn {
+    background: #8b5e3c;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.craft-btn:hover, .refine-btn:hover {
+    background: #6d4b2f;
+}
+
+/* Seções de refino */
+.refine-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.refine-section {
+    background: #fff;
+    border: 1px solid #e8e0d5;
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.refine-section h4 {
+    color: #2c1810;
+    margin: 0 0 8px 0;
+}
+
+/* Progresso de crafting */
+.crafting-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.progress-container {
+    background: #f9f3e6;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #d4c5b9;
+    border-radius: 4px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: #8b5e3c;
+    width: 0%;
+    transition: width 0.3s linear;
+}
+
+.time-remaining {
+    color: #5a4a42;
+    margin-bottom: 15px;
+}
+
+.cancel-craft {
+    background: #c53030;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cancel-craft:hover {
+    background: #9b2c2c;
+}
+
+/* Notificações */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #f9f3e6;
+    border-left: 4px solid;
+    padding: 12px 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    animation: slideIn 0.3s ease-out;
+    z-index: 1000;
+}
+
+.notification.red { border-color: #c53030; }
+.notification.green { border-color: #2f855a; }
+.notification.blue { border-color: #2b6cb0; }
+
+.notification-icon {
+    font-size: 18px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Estilos das receitas */
+.recipe-page {
+    padding: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.recipe-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    text-decoration: underline;
+}
+
+.recipe-illustration {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+    position: relative;
+    filter: sepia(20%) contrast(1.2);
+}
+
+.recipe-illustration img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.recipe-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.recipe-description {
+    font-style: italic;
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Lista de ingredientes */
+.ingredients-list {
+    background: rgba(139, 69, 19, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.ingredients-list h3 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.ingredients-list ul {
+    list-style: none;
+}
+
+.ingredients-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.ingredients-list .qty {
+    font-weight: bold;
+    color: var(--border-color);
+}
+
+/* Rodapé da receita */
+.recipe-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(139, 69, 19, 0.3);
+}
+
+.craft-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-color);
+}
+
+.craft-time img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+}
+
+/* Botão de Craft */
+.craft-btn {
+    background: linear-gradient(to bottom, var(--border-color), #654321);
+    border: 2px solid #3E2723;
+    color: var(--page-color);
+    padding: 10px 20px;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 
+        0 4px 6px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+}
+
+.craft-btn:hover {
+    background: linear-gradient(to bottom, #A0522D, var(--border-color));
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 8px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+.craft-btn:active {
+    transform: translateY(0);
+    box-shadow: 
+        0 2px 4px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(0,0,0,0.2);
+}
+
+/* Modal de Crafting */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    background: var(--page-color);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.modal-header h2 {
+    color: var(--accent-color);
+    font-size: 24px;
+}
+
+.close {
+    font-size: 28px;
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.close:hover {
+    transform: scale(1.1);
+}
+
+/* Informações da Receita */
+.recipe-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.recipe-name {
+    color: var(--accent-color);
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.recipe-description {
+    font-style: italic;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* Lista de Ingredientes */
+.ingredients-list {
+    margin: 20px 0;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.ingredient {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.ingredient.available {
+    border-left: 4px solid #4CAF50;
+}
+
+.ingredient:not(.available) {
+    border-left: 4px solid #f44336;
+    opacity: 0.7;
+}
+
+.ingredient .name {
+    font-weight: 500;
+}
+
+.ingredient .amount {
+    color: var(--accent-color);
+}
+
+/* Controles de Crafting */
+.crafting-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#craft-amount {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid var(--accent-color);
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+#start-craft {
+    padding: 8px 20px;
+    background: var(--accent-color);
+    color: var(--page-color);
+    border: none;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#start-craft:hover:not(:disabled) {
+    background: #6b3410;
+    transform: translateY(-2px);
+}
+
+#start-craft:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Barra de Progresso */
+.crafting-progress {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress {
+    width: 0;
+    height: 100%;
+    background: var(--accent-color);
+    transition: width 0.1s linear;
+}
+
+#cancel-craft {
+    width: 100%;
+    padding: 8px;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#cancel-craft:hover {
+    background: #d32f2f;
+}
+
+/* Notificações */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    animation: slideIn 0.3s ease;
+    z-index: 1100;
+}
+
+.notification.success {
+    background: #4CAF50;
+}
+
+.notification.error {
+    background: #f44336;
+}
+
+.notification.warning {
+    background: #ff9800;
+}
+
+.notification.info {
+    background: #2196F3;
+}
+
+.notification.fade-out {
+    animation: fadeOut 0.5s ease forwards;
+}
+
+/* Utilitários */
+.hidden {
+    display: none;
+}
+
+/* Animações */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+} 

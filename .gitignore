@@ -1,0 +1,33 @@
+# Dependências
+nui/book/js/jquery.min.js
+nui/book/js/turn.min.js
+
+# Assets temporários
+nui/book/assets/textures/*
+nui/book/assets/fonts/*
+nui/book/assets/sounds/*
+nui/book/assets/illustrations/*
+nui/book/assets/icons/*
+!nui/book/assets/textures/.gitkeep
+!nui/book/assets/fonts/.gitkeep
+!nui/book/assets/sounds/.gitkeep
+!nui/book/assets/illustrations/.gitkeep
+!nui/book/assets/icons/.gitkeep
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs e editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~ 

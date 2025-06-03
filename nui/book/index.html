@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Murphy Craft</title>
+    <link rel="stylesheet" href="css/book.css">
+    <link rel="stylesheet" href="css/crafting.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div id="craft-book">
+        <!-- Barra de Pesquisa -->
+        <div class="search-bar">
+            <input type="text" id="recipe-search" placeholder="Pesquisar receitas...">
+            <div class="categories-filter">
+                <!-- Categorias serão inseridas aqui -->
+            </div>
+        </div>
+
+        <!-- Livro -->
+        <div class="book-container">
+            <div id="book">
+                <!-- Capa -->
+                <div class="hard">
+                    <div class="book-cover">
+                        <h1>Livro de Receitas</h1>
+                        <p>Murphy Craft</p>
+                    </div>
+                </div>
+
+                <!-- Índice -->
+                <div class="page index-page">
+                    <h2>Índice</h2>
+                    <div class="category-list">
+                        <!-- Categorias serão inseridas aqui -->
+                    </div>
+                </div>
+
+                <!-- Páginas de Receitas -->
+                <div id="recipe-pages">
+                    <!-- Receitas serão inseridas aqui -->
+                </div>
+
+                <!-- Contracapa -->
+                <div class="hard"></div>
+            </div>
+        </div>
+
+        <!-- Modal de Crafting -->
+        <div id="craft-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Crafting</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="recipe-info">
+                        <h3 class="recipe-name"></h3>
+                        <p class="recipe-description"></p>
+                    </div>
+                    <div class="ingredients-list">
+                        <!-- Ingredientes serão inseridos aqui -->
+                    </div>
+                    <div class="crafting-controls">
+                        <input type="number" id="craft-amount" min="1" value="1">
+                        <button id="start-craft">Criar</button>
+                    </div>
+                    <div class="crafting-progress hidden">
+                        <div class="progress-bar">
+                            <div class="progress"></div>
+                        </div>
+                        <button id="cancel-craft">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/turn.min.js"></script>
+    <script src="js/book.js"></script>
+    <script src="js/crafting.js"></script>
+</body>
+</html> 

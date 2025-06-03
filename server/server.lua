@@ -1,21 +1,40 @@
 local allworkbench = {}
 local VorpInv = exports.vorp_inventory:vorp_inventoryApi()
 
+-- Criar tabelas necessárias na primeira execução
+Citizen.CreateThread(function()
+	Wait(1000) -- Aguardar conexão com banco de dados
+	
+	-- Criar tabela npp_craft se não existir
+	MySQL.query([[
+		CREATE TABLE IF NOT EXISTS `npp_craft` (
+			`id` varchar(50) NOT NULL,
+			`materials` longtext NOT NULL DEFAULT '[]',
+			`upgrade` longtext NOT NULL DEFAULT '[]',
+			`fuel` int(11) NOT NULL DEFAULT 0,
+			`outcome` longtext NOT NULL DEFAULT '[]',
+			`worktime` int(11) NOT NULL DEFAULT 0,
+			PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+	]], {}, function(result)
+		print("^2[npp_craft]^0 Tabelas verificadas/criadas com sucesso!")
+	end)
+end)
 
-jo.callback.register('murphy_craft:GiveItem', function(source,item,amount, meta)
+jo.callback.register('npp_craft:GiveItem', function(source,item,amount, meta)
 	print(source,item,amount, meta)
 	local result = GiveItem(source, item, amount, meta)
 	return result
 end)
 
-jo.callback.register('murphy_craft:RemoveItem', function(source,item,amount, meta)
+jo.callback.register('npp_craft:RemoveItem', function(source,item,amount, meta)
 	print(source,item,amount, meta)
 	local result = RemoveItem(source, item, amount, meta)
 	return result
 end)
 
-RegisterServerEvent("murphy_craft:TryCraft")
-AddEventHandler("murphy_craft:TryCraft", function(settings, recipeIndex, amount)
+RegisterServerEvent("npp_craft:TryCraft")
+AddEventHandler("npp_craft:TryCraft", function(settings, recipeIndex, amount)
     local _src = source
     local recipe = settings.recipe[recipeIndex]
     local canCraft = true
@@ -30,19 +49,19 @@ AddEventHandler("murphy_craft:TryCraft", function(settings, recipeIndex, amount)
     end
 
     if canCraft then
-        TriggerClientEvent("murphy_craft:PlayCraftAnim", _src, settings.anim[1], settings.anim[2], recipe.worktime, settings, recipeIndex, amount)
+        TriggerClientEvent("npp_craft:PlayCraftAnim", _src, settings.anim[1], settings.anim[2], recipe.worktime, settings, recipeIndex, amount)
     else
-		TriggerClientEvent("murphy_craft:Notify", _src, "Not enough materials!", "cross", "COLOR_RED", 5000)
+		TriggerClientEvent("npp_craft:Notify", _src, "Not enough materials!", "cross", "COLOR_RED", 5000)
     end
 end)
 
-RegisterServerEvent("murphy_craft:FinishCraft")
-AddEventHandler("murphy_craft:FinishCraft", function(settings, recipeIndex, amount)
+RegisterServerEvent("npp_craft:FinishCraft")
+AddEventHandler("npp_craft:FinishCraft", function(settings, recipeIndex, amount)
     local _src = source
-    print("[murphy_craft] FinishCraft triggered for player:", _src)
+    print("[npp_craft] FinishCraft triggered for player:", _src)
 
     if not settings or not settings.recipe or not settings.recipe[recipeIndex] then
-        print("[murphy_craft] ERROR: Invalid settings or recipe index")
+        print("[npp_craft] ERROR: Invalid settings or recipe index")
         return
     end
 
@@ -55,7 +74,7 @@ AddEventHandler("murphy_craft:FinishCraft", function(settings, recipeIndex, amou
         local itemCount = req[2] * amount
         local playerCount = GetItemAmount(_src, itemName)
 
-        print(string.format("[murphy_craft] Checking item: %s (player has: %d / needs: %d)", itemName, playerCount, itemCount))
+        print(string.format("[npp_craft] Checking item: %s (player has: %d / needs: %d)", itemName, playerCount, itemCount))
 
         if playerCount < itemCount then
             table.insert(missingItems, string.format("%sx %s", itemCount, itemName))
@@ -65,8 +84,8 @@ AddEventHandler("murphy_craft:FinishCraft", function(settings, recipeIndex, amou
     -- Notify and stop if items missing
     if #missingItems > 0 then
         local msg = "Missing: " .. table.concat(missingItems, ", ")
-        print("[murphy_craft] Not enough items. Sending notification:", msg)
-        TriggerClientEvent("murphy_craft:Notify", _src, msg, "cross", "COLOR_RED", 5000)
+        print("[npp_craft] Not enough items. Sending notification:", msg)
+        TriggerClientEvent("npp_craft:Notify", _src, msg, "cross", "COLOR_RED", 5000)
         return
     end
 
@@ -79,13 +98,13 @@ AddEventHandler("murphy_craft:FinishCraft", function(settings, recipeIndex, amou
     for _, reward in pairs(recipe.craft) do
         GiveItem(_src, reward[1], reward[2] * amount)
         local craftedMsg = string.format("Crafted Successfully!", reward[2] * amount, reward[1])
-        print("[murphy_craft] Crafted item:", craftedMsg)
-        TriggerClientEvent("murphy_craft:Notify", _src, craftedMsg, "tick", "COLOR_WHITE", 5000)
+        print("[npp_craft] Crafted item:", craftedMsg)
+        TriggerClientEvent("npp_craft:Notify", _src, craftedMsg, "tick", "COLOR_WHITE", 5000)
     end
 end)
 
 
-RegisterServerEvent("murphy_craft:CraftCheckQuantity", function(data, tag)
+RegisterServerEvent("npp_craft:CraftCheckQuantity", function(data, tag)
     local _source = source
     local ItemAmount = {}
     local canCraft = true
@@ -112,14 +131,14 @@ RegisterServerEvent("murphy_craft:CraftCheckQuantity", function(data, tag)
                 lowerAmount = quantity
             end
         end
-        TriggerClientEvent("murphy_craft:CraftGetQuantity", _source, math.floor(lowerAmount), tag)
+        TriggerClientEvent("npp_craft:CraftGetQuantity", _source, math.floor(lowerAmount), tag)
     else
-        TriggerClientEvent("murphy_craft:CraftGetQuantity", _source, 0, tag)
+        TriggerClientEvent("npp_craft:CraftGetQuantity", _source, 0, tag)
     end
 end)
 
 
-RegisterServerEvent("murphy_craft:CheckRefinedQuantity", function(item, multiply, sliderindex,  id, recipe)
+RegisterServerEvent("npp_craft:CheckRefinedQuantity", function(item, multiply, sliderindex,  id, recipe)
 	local workbenchid = id.."_"..recipe
 	local count
 	local _source = source
@@ -137,12 +156,12 @@ RegisterServerEvent("murphy_craft:CheckRefinedQuantity", function(item, multiply
 		count = 0
 	end
 	count = count * multiply
-	TriggerClientEvent("murphy_craft:CraftGetQuantity", _source, count, sliderindex)
+	TriggerClientEvent("npp_craft:CraftGetQuantity", _source, count, sliderindex)
 
 
 end)
 
-RegisterServerEvent("murphy_craft:AddItemstoRefine", function(amount, refinetype, id, data, recipe, timer, outcomedata, fueldata, upgradedata)
+RegisterServerEvent("npp_craft:AddItemstoRefine", function(amount, refinetype, id, data, recipe, timer, outcomedata, fueldata, upgradedata)
 	local _source = source
 	local workbenchid = id.."_"..recipe
 	local worktime = tonumber(timer) or 0
@@ -213,7 +232,7 @@ function getNextIndex(tbl)
     return maxIndex + 1
 end
 
-RegisterServerEvent("murphy_craft:RetrieveRefinedItems", function(item, count, id, recipe)
+RegisterServerEvent("npp_craft:RetrieveRefinedItems", function(item, count, id, recipe)
 	local workbenchid = id.."_"..recipe
 	local outcome = allworkbench[workbenchid].outcome
 
@@ -233,7 +252,7 @@ RegisterServerEvent("murphy_craft:RetrieveRefinedItems", function(item, count, i
 	end
 end)
 
-RegisterServerEvent("murphy_craft:AskDataRefine", function(id, recipe)
+RegisterServerEvent("npp_craft:AskDataRefine", function(id, recipe)
 	local workbenchid = id.."_"..recipe
 	local _source = source
 	local data = {}
@@ -260,19 +279,19 @@ RegisterServerEvent("murphy_craft:AskDataRefine", function(id, recipe)
 		data["fuelcount"] = 0
 		data["upgradecount"] = {}
 	end
-	TriggerClientEvent("murphy_craft:GetRefineData", _source, data)
+	TriggerClientEvent("npp_craft:GetRefineData", _source, data)
 end)
 
 
 Citizen.CreateThread(function ()
 	Wait(1000)
-	MySQL.query('SELECT * FROM `murphy_craft`',{}, function(result)
+	MySQL.query('SELECT * FROM `npp_craft`',{}, function(result)
 		if #result ~= 0 then
 			for i = 1, #result do
 				local outcome = json.decode(result[i].outcome)
 				local upgrade = json.decode(result[i].upgrade)
 				if result[i].materials < 1 and tonumber(result[i].fuel) < 1 and next(outcome) == nil and next(upgrade) == nil then
-					MySQL.update('DELETE FROM murphy_craft WHERE `id`=@id', {id = result[i].id})
+					MySQL.update('DELETE FROM npp_craft WHERE `id`=@id', {id = result[i].id})
 				else
 					allworkbench[result[i].id]= {
 						materials = result[i].materials,
@@ -393,7 +412,7 @@ function SaveRefiningStations()
     craftSaved = 0
     for k,v in pairs(allworkbench) do
 		if v.materials == 0 and tonumber(v.fuel) == 0 and next(v.outcome) == nil and next(v.upgrade) == nil then
-            MySQL.update('DELETE FROM murphy_craft WHERE `id`=@id', {id = k}, function(rowsChanged)
+            MySQL.update('DELETE FROM npp_craft WHERE `id`=@id', {id = k}, function(rowsChanged)
             end)
         else
             local updateData = {
@@ -407,14 +426,14 @@ function SaveRefiningStations()
             
 
 			MySQL.query(
-				"SELECT * FROM murphy_craft WHERE `id`=@id;",
+				"SELECT * FROM npp_craft WHERE `id`=@id;",
 				{
 					id = k,
 				},
 				function(result)
 					if result[1] == nil then
 						MySQL.update(
-							'INSERT INTO murphy_craft (`id`, `materials`, `upgrade`, `fuel`, `outcome`, `worktime`) VALUES (@id, @materials, @upgrade, @fuel, @outcome, @worktime);', 
+							'INSERT INTO npp_craft (`id`, `materials`, `upgrade`, `fuel`, `outcome`, `worktime`) VALUES (@id, @materials, @upgrade, @fuel, @outcome, @worktime);', 
 							updateData,
 							function(rowsChanged)
 							end
@@ -422,7 +441,7 @@ function SaveRefiningStations()
 						craftSaved = craftSaved + 1
 					else
 						MySQL.update(
-							'UPDATE murphy_craft SET `materials`=@materials, `upgrade`=@upgrade, `fuel`=@fuel, `outcome`=@outcome, `worktime`=@worktime WHERE `id`=@id;', 
+							'UPDATE npp_craft SET `materials`=@materials, `upgrade`=@upgrade, `fuel`=@fuel, `outcome`=@outcome, `worktime`=@worktime WHERE `id`=@id;', 
 							updateData,
 							function(rowsChanged)
 							end

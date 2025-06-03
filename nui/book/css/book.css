@@ -1,0 +1,303 @@
+/* Importar fonte */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+/* Reset e Variáveis */
+:root {
+    --book-width: 922px;
+    --book-height: 600px;
+    --page-color: #f4e4bc;
+    --text-color: #2c1810;
+    --accent-color: #8b4513;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Playfair Display', serif;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--text-color);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Container Principal */
+#craft-book {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Barra de Pesquisa */
+.search-bar {
+    width: 100%;
+    max-width: var(--book-width);
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#recipe-search {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid var(--accent-color);
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 16px;
+    background: rgba(244, 228, 188, 0.9);
+}
+
+.categories-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.category-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    background: var(--accent-color);
+    color: var(--page-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-btn:hover {
+    background: #6b3410;
+    transform: translateY(-2px);
+}
+
+/* Livro */
+.book-container {
+    width: var(--book-width);
+    height: var(--book-height);
+    position: relative;
+    perspective: 1500px;
+}
+
+#book {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+}
+
+/* Páginas */
+.page {
+    background: var(--page-color);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 10%);
+    pointer-events: none;
+}
+
+/* Capa */
+.hard {
+    background: #5c3624 !important;
+    color: var(--page-color);
+    text-align: center;
+    padding: 0;
+    box-shadow: inset -3px 0 5px var(--shadow-color);
+}
+
+.book-cover {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: url('../assets/textures/leather.png');
+    border: 20px solid #3a2116;
+}
+
+.book-cover h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px var(--shadow-color);
+}
+
+.book-cover p {
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+/* Índice */
+.index-page {
+    text-align: center;
+}
+
+.index-page h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: var(--accent-color);
+}
+
+.category-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.category-item {
+    padding: 15px;
+    border: 2px solid var(--accent-color);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.category-item h3 {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+/* Páginas de Receitas */
+.recipe-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.recipe-content h2 {
+    color: var(--accent-color);
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.recipe-description {
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.recipe-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.materials ul {
+    list-style: none;
+}
+
+.materials li {
+    margin: 5px 0;
+    padding: 5px 10px;
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 3px;
+}
+
+.result {
+    text-align: center;
+    padding: 20px;
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 5px;
+}
+
+.recipe-info {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background: rgba(139, 69, 19, 0.05);
+    border-radius: 5px;
+}
+
+.craft-btn {
+    align-self: center;
+    padding: 12px 30px;
+    background: var(--accent-color);
+    color: var(--page-color);
+    border: none;
+    border-radius: 25px;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.craft-btn:hover {
+    background: #6b3410;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+/* Navegação */
+.book-navigation {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-btn {
+    background: none;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--accent-color);
+    color: var(--page-color);
+}
+
+.page-indicator {
+    color: var(--accent-color);
+    font-size: 18px;
+    min-width: 50px;
+    text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    #craftbook-container {
+        width: 90%;
+        height: auto;
+        aspect-ratio: 1.54;
+    }
+} 
