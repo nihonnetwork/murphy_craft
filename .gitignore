@@ -1,13 +1,9 @@
 # Dependências
-nui/book/js/jquery.min.js
-nui/book/js/turn.min.js
 
 # Assets temporários
-nui/book/assets/textures/*
-nui/book/assets/fonts/*
+
 nui/book/assets/sounds/*
-nui/book/assets/illustrations/*
-nui/book/assets/icons/*
+
 !nui/book/assets/textures/.gitkeep
 !nui/book/assets/fonts/.gitkeep
 !nui/book/assets/sounds/.gitkeep
