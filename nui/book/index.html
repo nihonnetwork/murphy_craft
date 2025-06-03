@@ -3,77 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Murphy Craft</title>
+    <title>Murphy Craft - Livro de Receitas</title>
+    
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos -->
     <link rel="stylesheet" href="css/book.css">
+    <link rel="stylesheet" href="css/pages.css">
     <link rel="stylesheet" href="css/crafting.css">
     <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
-    <div id="craft-book">
-        <!-- Barra de Pesquisa -->
-        <div class="search-bar">
-            <input type="text" id="recipe-search" placeholder="Pesquisar receitas...">
-            <div class="categories-filter">
-                <!-- Categorias serão inseridas aqui -->
+    <!-- Container Principal -->
+    <div id="craft-book-container">
+        <!-- Barra de Navegação Superior -->
+        <div class="book-controls">
+            <div class="search-container">
+                <input type="text" id="recipe-search" placeholder="Pesquisar receitas..." />
+                <button id="clear-search" class="btn-clear">✕</button>
+            </div>
+            
+            <div class="filter-controls">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="available">Disponíveis</button>
+                <button class="filter-btn" data-filter="favorites">Favoritos</button>
+            </div>
+            
+            <div class="book-actions">
+                <button id="toggle-notes" class="btn-action">📝</button>
+                <button id="book-settings" class="btn-action">⚙️</button>
+                <button id="close-book" class="btn-close">✕</button>
             </div>
         </div>
 
-        <!-- Livro -->
-        <div class="book-container">
-            <div id="book">
+        <!-- Livro Principal -->
+        <div class="book-wrapper">
+            <!-- Abas de Categorias -->
+            <div class="book-tabs">
+                <!-- Abas serão inseridas dinamicamente -->
+            </div>
+
+            <!-- Livro Turn.js -->
+            <div id="craftbook">
                 <!-- Capa -->
-                <div class="hard">
-                    <div class="book-cover">
-                        <h1>Livro de Receitas</h1>
-                        <p>Murphy Craft</p>
+                <div class="hard book-cover">
+                    <div class="cover-content">
+                        <div class="cover-decoration"></div>
+                        <h1 class="cover-title">Livro de Receitas</h1>
+                        <div class="cover-subtitle">
+                            <p>Murphy Craft</p>
+                            <p class="cover-edition">Edição do Artesão</p>
+                        </div>
+                        <div class="cover-illustration">
+                            <div class="hammer-icon">🔨</div>
+                        </div>
+                        <div class="cover-border"></div>
                     </div>
                 </div>
 
-                <!-- Índice -->
+                <!-- Página de Índice -->
                 <div class="page index-page">
-                    <h2>Índice</h2>
-                    <div class="category-list">
-                        <!-- Categorias serão inseridas aqui -->
+                    <div class="page-content">
+                        <h2 class="page-title">Índice</h2>
+                        <div class="index-ornament">❦</div>
+                        
+                        <div class="index-list">
+                            <!-- Índice será gerado dinamicamente -->
+                        </div>
+                        
+                        <div class="index-footer">
+                            <p class="index-note">Use as abas laterais para navegação rápida</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Páginas de Receitas -->
-                <div id="recipe-pages">
-                    <!-- Receitas serão inseridas aqui -->
+                <!-- Páginas de Receitas serão inseridas dinamicamente -->
+                <div id="recipe-pages-container">
+                    <!-- Páginas geradas pelo JavaScript -->
                 </div>
 
                 <!-- Contracapa -->
-                <div class="hard"></div>
+                <div class="hard book-back">
+                    <div class="back-content">
+                        <div class="back-pattern"></div>
+                        <div class="back-info">
+                            <h3>Murphy Development</h3>
+                            <p>Sistema de Crafting</p>
+                            <p class="version">v1.0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles de Navegação -->
+            <div class="book-navigation">
+                <button id="prev-page" class="nav-btn" disabled>‹</button>
+                <span id="page-indicator" class="page-indicator">1 / 1</span>
+                <button id="next-page" class="nav-btn">›</button>
             </div>
         </div>
 
         <!-- Modal de Crafting -->
         <div id="craft-modal" class="modal">
+            <div class="modal-backdrop"></div>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Crafting</h2>
-                    <span class="close">&times;</span>
+                    <h2 class="modal-title">Criar Item</h2>
+                    <button class="modal-close">✕</button>
                 </div>
+                
                 <div class="modal-body">
-                    <div class="recipe-info">
-                        <h3 class="recipe-name"></h3>
-                        <p class="recipe-description"></p>
-                    </div>
-                    <div class="ingredients-list">
-                        <!-- Ingredientes serão inseridos aqui -->
-                    </div>
-                    <div class="crafting-controls">
-                        <input type="number" id="craft-amount" min="1" value="1">
-                        <button id="start-craft">Criar</button>
-                    </div>
-                    <div class="crafting-progress hidden">
-                        <div class="progress-bar">
-                            <div class="progress"></div>
+                    <div class="recipe-summary">
+                        <div class="recipe-icon">
+                            <img id="modal-recipe-icon" src="" alt="Item" />
                         </div>
-                        <button id="cancel-craft">Cancelar</button>
+                        <div class="recipe-info">
+                            <h3 id="modal-recipe-name">Nome do Item</h3>
+                            <p id="modal-recipe-description">Descrição do item</p>
+                        </div>
                     </div>
+
+                    <div class="ingredients-section">
+                        <h4>Materiais Necessários:</h4>
+                        <div id="modal-ingredients-list" class="ingredients-list">
+                            <!-- Ingredientes serão inseridos aqui -->
+                        </div>
+                    </div>
+
+                    <div class="quantity-section">
+                        <label for="craft-quantity">Quantidade:</label>
+                        <div class="quantity-controls">
+                            <button id="qty-decrease" class="qty-btn">-</button>
+                            <input type="number" id="craft-quantity" min="1" max="1" value="1" />
+                            <button id="qty-increase" class="qty-btn">+</button>
+                        </div>
+                        <span id="max-quantity" class="max-qty-info">Máximo: 1</span>
+                    </div>
+
+                    <div class="craft-info">
+                        <div class="info-item">
+                            <span class="info-label">Tempo:</span>
+                            <span id="craft-time" class="info-value">0s</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Total:</span>
+                            <span id="total-time" class="info-value">0s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="start-craft" class="btn-craft" disabled>
+                        <span class="btn-text">Criar Item</span>
+                        <span class="btn-icon">🔨</span>
+                    </button>
+                    <button id="cancel-craft" class="btn-cancel">Cancelar</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Modal de Progresso -->
+        <div id="progress-modal" class="modal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content progress-content">
+                <div class="progress-header">
+                    <h3>Criando Item...</h3>
+                    <div class="crafting-animation">
+                        <div class="hammer-animation">🔨</div>
+                        <div class="sparks">✨</div>
+                    </div>
+                </div>
+                
+                <div class="progress-body">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="progress-info">
+                        <span id="progress-text">Preparando materiais...</span>
+                        <span id="progress-time">0s restantes</span>
+                    </div>
+                </div>
+
+                <div class="progress-footer">
+                    <button id="cancel-progress" class="btn-cancel">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistema de Notificações -->
+        <div id="notification-container">
+            <!-- Notificações serão inseridas aqui -->
+        </div>
+
+        <!-- Tooltip -->
+        <div id="tooltip" class="tooltip">
+            <div class="tooltip-content"></div>
+            <div class="tooltip-arrow"></div>
         </div>
     </div>
 
@@ -82,5 +208,19 @@
     <script src="js/turn.min.js"></script>
     <script src="js/book.js"></script>
     <script src="js/crafting.js"></script>
+    <script src="js/categories.js"></script>
+    
+    <!-- Inicialização -->
+    <script>
+        $(document).ready(function() {
+            // Inicializar sistema
+            window.murphyCraft = new MurphyCraft();
+            
+            // Debug mode
+            if (localStorage.getItem('murphy_debug') === 'true') {
+                window.murphyCraft.enableDebug();
+            }
+        });
+    </script>
 </body>
-</html> 
+</html>
