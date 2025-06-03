@@ -500,7 +500,6 @@
 
 .cursor-not-allowed {
     cursor: not-allowed !important;
-}--transition-normal);
 }
 
 .modal.show {
